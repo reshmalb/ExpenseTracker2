@@ -1,111 +1,73 @@
-import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
-import axios from 'axios';
-const Signup = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+import React, { useState,useRef, useContext } from 'react';
+import { Container, Form, Button } from 'react-bootstrap';
+import axios from 'axios'
+import AuthContext from '../Store/AuthContext';
 
+const LoginPage = () => {
+const emailref=useRef();
+const passwordRef=useRef();
+const [isLoading,setLoading]=useState(false)
+const atx=useContext(AuthContext)
 
-
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value
-    }));
-  };
-
-
-
-
+  
 
   const handleSubmit = async (event) => {
+    setLoading(true)
     event.preventDefault();
+     const email=emailref.current.value;
+     const password=passwordRef.current.value;
+     let url="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es"
+     try{
 
-    setLoading(true);
-
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("Passwords don't match");
-      setLoading(false);
-      return;
-    }
-       const data={
-        email:formData.email,
-        password:formData.password,
-        returnSecureToken:true     
-       }
-    try {
-      const response = await fetch( 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es',
-        {method:'POST',
-          body:JSON.stringify({
-            email:formData.email,
-            password:formData.password,
+          const response=await axios.post(url,{
+            email:email,
+            password:password,
             returnSecureToken:true
-          }),
-          headers:{
-            'Content-Type':'application/json'
+          });
+          const data=response.data;     
+          if(response.status===200){
+           console.log("login success");
+           console.log("token=",data.idToken)
+           atx.login(data.idToken)
+           
           }
-        })
-        if(response.ok)
-       {  console.log('User has successfully signed up', response);  } 
-    } catch (error) {
-        setErrorMessage(error.message);
-    }
-  
-    setLoading(false);
+          else{
+            throw new Error('Authntication failed!!!')
+          }
+
+     }
+     catch(error){
+      alert(error.message)
+
+     }
+     emailref.current.value="";
+     passwordRef.current.value="";
+     setLoading(false)
+
   };
-return(
- <Form onSubmit={handleSubmit}>
-  {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-  <Form.Group controlId="email">
-    <Form.Label>Email</Form.Label>
-    <Form.Control
-      type="email"
-      name="email"
-      value={formData.email}
-      onChange={handleInputChange}
-      required
-    />
-  </Form.Group>
 
-  <Form.Group controlId="password">
-    <Form.Label>Password</Form.Label>
-    <Form.Control
-      type="password"
-      name="password"
-      value={formData.password}
-      onChange={handleInputChange}
-      required
-    />
-  </Form.Group>
+  return (
+    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+      <div className="bg-light p-5" style={{ minWidth: 300 }}>
+        <h2 className="mb-4">Login</h2>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control type="email" placeholder="Enter email"  ref={emailref} />
+          </Form.Group>
 
-  <Form.Group controlId="confirmPassword">
-    <Form.Label>Confirm Password</Form.Label>
-    <Form.Control
-      type="password"
-      name="confirmPassword"
-      value={formData.confirmPassword}
-      onChange={handleInputChange}
-      required
-    />
-  </Form.Group>
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="Password"  ref={passwordRef} />
+          </Form.Group>
 
-  <Button variant="primary" type="submit" disabled={loading}>
-    {loading ? 'Loading...' : 'Sign Up'}
-  </Button>
-</Form>
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+      </div>
+    </Container>
+  );
+};
 
-
-)
-
-
-
-}
-
-export default Signup;
+export default LoginPage;
