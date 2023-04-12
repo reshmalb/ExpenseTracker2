@@ -65,11 +65,11 @@ const onSwithAuthorizationModeHandler=()=>{
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+    <Container className="d-flex justify-content-center align-items-center mb-3rem border-shadow-2px" style={{ minHeight: '100vh' }}>
       <div className="bg-light p-5" style={{ minWidth: 300 }}>
        
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formBasicEmail">
+        <Form onSubmit={handleSubmit} className='mb-3rem'>
+          <Form.Group controlId="formBasicEmail" className='mb-3rem'>
              <h4>{isLogin ?'Login':'SignUp'}</h4>
            
             <Form.Control type="email" placeholder="Enter email"  ref={emailref} required />

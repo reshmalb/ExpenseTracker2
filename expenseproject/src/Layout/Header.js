@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navbar, Nav, Button } from 'react-bootstrap';
+import AuthContext from '../Store/AuthContext';
+import { NavLink } from 'react-router-dom';
+import Home from '../pages/Home';
+
 
 const Header = () => {
+
+    const atx=useContext(AuthContext);
+
+    const logoutHandler=()=>{
+        atx.logout();
+    }
+
   return (
     <Navbar bg="light" expand="md">
-      <Navbar.Brand href="/">Expense Tracker</Navbar.Brand>
+      <Navbar.Brand >Expense Tracker</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-          <Nav.Link href="/">Home</Nav.Link>
-          <Nav.Link href="/profile">Profile</Nav.Link>
-          <Nav.Link href="/login">Login</Nav.Link>
-          <Button variant="outline-secondary" href="/logout">Logout</Button>
+          <Nav.Link to='/home' as={NavLink}>Home</Nav.Link>
+          <Nav.Link  to="/profile" as={NavLink}>  Profile</Nav.Link>
+        {!atx.isLoggedIn &&  <Nav.Link to="/login" as={NavLink}  >Login</Nav.Link>}
+        {atx.isLoggedIn&&  <Button variant="outline-none" className='float-right' onClick={logoutHandler}>Logout</Button>}
         </Nav>
       </Navbar.Collapse>
     </Navbar>
