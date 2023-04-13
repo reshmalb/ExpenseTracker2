@@ -3,7 +3,7 @@ import React, { useState,useRef, useContext } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios'
 import AuthContext from '../Store/AuthContext';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const LoginPage = () => {
 const emailref=useRef();
@@ -96,18 +96,24 @@ const onSwithAuthorizationModeHandler=()=>{
           {passwordmismatch &&<p color='red'>Enter Correct password...</p>}
           {!isLoading && <Button variant="primary" type="submit" >
             {isLogin?'Login':'Signup'}
+           
           </Button>}
-          {isLoading && <p color='green'>Sending Request</p>}
           <div>
+           {!isLoading && isLogin && <a href='#forgot'>Forgot password? </a>
+           
+            }
+             </div>
+          {isLoading && <p color='green'>Sending Request</p>}
+           
+        </Form>
+        <div>
           <p> {isLogin?'Create New Account.':'Have an  Account?'}
           <Button variant="Link" onClick={onSwithAuthorizationModeHandler}>
               {isLogin?'SignUp':'Login'}
           </Button></p>
-          </div>
-          
-        </Form>
+          </div>        
       </div>
-    
+      
          
     </Container>
   );
