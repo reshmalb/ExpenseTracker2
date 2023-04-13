@@ -3,6 +3,7 @@ import React, { useState,useRef, useContext } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios'
 import AuthContext from '../Store/AuthContext';
+import { useHistory } from 'react-router-dom';
 
 const LoginPage = () => {
 const emailref=useRef();
@@ -11,7 +12,10 @@ const confirmpasswordRef=useRef();
 const [isLoading,setLoading]=useState(false)
 const [isLogin,setIsLogin]=useState(true)
 const [passwordmismatch,setPasswordMisMatch]=useState(false)
+const [isSignUp,setSignUp]=useState(false)
 const atx=useContext(AuthContext)
+const history=useHistory();
+
 
 const onSwithAuthorizationModeHandler=()=>{
   setIsLogin((prevState)=>!prevState)
@@ -25,7 +29,7 @@ const onSwithAuthorizationModeHandler=()=>{
      const password=passwordRef.current.value;
      let url;
      if(isLogin){
-       let url="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es"
+        url="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es"
      }
      else{
       url= 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es';
@@ -33,6 +37,7 @@ const onSwithAuthorizationModeHandler=()=>{
       if(password!=confirmPassword){
           setPasswordMisMatch(true)
       }
+
          
      }
      try{
@@ -46,7 +51,14 @@ const onSwithAuthorizationModeHandler=()=>{
           if(response.status===200){
            console.log("login success");
            console.log("token=",data.idToken)
+           if(!isLogin){
+            setIsLogin(true)
+            history.replace('./login')
+           }
+           else{
            atx.login(data.idToken)
+           history.replace('/profile')               
+           }
            
           }
           else{
@@ -69,17 +81,17 @@ const onSwithAuthorizationModeHandler=()=>{
       <div className="bg-light p-5" style={{ minWidth: 300 }}>
        
         <Form onSubmit={handleSubmit} className='mb-3rem'>
-          <Form.Group controlId="formBasicEmail" className='mb-3rem'>
+          <Form.Group controlId="formBasicEmail" className='mb-3'>
              <h4>{isLogin ?'Login':'SignUp'}</h4>
            
             <Form.Control type="email" placeholder="Enter email"  ref={emailref} required />
           </Form.Group>
 
-          <Form.Group controlId="formBasicPassword">          
+          <Form.Group controlId="formBasicPassword" className='mb-3'>          
             <Form.Control type="password" placeholder="Password"  ref={passwordRef} required/>
           </Form.Group>
-           {!isLogin &&  <Form.Group controlId="formBasicPassword">          
-            <Form.Control type="confirmPassword" placeholder="Confirm Password"  ref={confirmpasswordRef} required/>
+           {!isLogin &&  <Form.Group controlId="formBasicPassword" className='mb-3'>          
+            <Form.Control type="Password" placeholder="Confirm Password"  ref={confirmpasswordRef} required/>
           </Form.Group>}
           {passwordmismatch &&<p color='red'>Enter Correct password...</p>}
           {!isLoading && <Button variant="primary" type="submit" >
