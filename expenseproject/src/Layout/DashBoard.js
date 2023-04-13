@@ -1,35 +1,56 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { Modal } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
-function Dashboard() {
-    return(
+import ProfileForm from './ProfileForm';
 
-    
-<div
-      className="modal show"
-      style={{ display: 'block',
-       position: 'initial',
-       width:"100 %",
-       height:"100%",
-     }}
-    >
-      <Modal.Dialog>
-        <Modal.Header closeButton>
-          <Modal.Title>Welcome to Expense Tracker</Modal.Title>
-          <p>haiiiii</p>
+function MyVerticallyCenteredModal(props) {
+
+    const [isProfile,setProfile]=useState(false);
+
+    const profileClickHandler=()=>{
+        setProfile(true)
+    }
+    return (
+      <Modal
+        {...props}
+        size="xl"
+        aria-labelledby="contained-modal-title"
+       top
+      >
+        <Modal.Header >
+          <Modal.Title id="contained-modal-title-vcenter">
+           Welcome to ExpenseTracker
+            <span className='float-right'>
+                <Button className='bg-whites-sm me-2' onClick={profileClickHandler}>
+                    Your profile is incomplete Complete Now
+                </Button></span>
+          </Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
-          <p>Modal body text goes here.</p>
+        {isProfile &&(<ProfileForm/>)}
         </Modal.Body>
-
         <Modal.Footer>
-          <Button variant="secondary">Close</Button>
-          <Button variant="primary">Save changes</Button>
+          <Button onClick={props.onHide}>Close</Button>
         </Modal.Footer>
-      </Modal.Dialog>
-    </div>
-    )
+      </Modal>
+    );
+  }
+
+
+
+
+function Dashboard() {
+    const [modalShow, setModalShow] = React.useState(true);
+
+    return (
+      <>       
+  
+        <MyVerticallyCenteredModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+        />
+      </>
+    );
 }
 
 export default Dashboard;
