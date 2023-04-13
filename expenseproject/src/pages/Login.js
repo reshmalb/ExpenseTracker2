@@ -4,6 +4,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios'
 import AuthContext from '../Store/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
+import Dashboard from '../Layout/DashBoard';
 
 const LoginPage = () => {
 const emailref=useRef();
@@ -57,7 +58,8 @@ const onSwithAuthorizationModeHandler=()=>{
            }
            else{
            atx.login(data.idToken)
-           history.replace('/profile')               
+           history.replace('/dashboard')
+                    
            }
            
           }
@@ -104,6 +106,7 @@ const onSwithAuthorizationModeHandler=()=>{
             }
              </div>
           {isLoading && <p color='green'>Sending Request</p>}
+          
            
         </Form>
         <div>
