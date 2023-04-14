@@ -13,7 +13,7 @@ const Header = () => {
 
     const logoutHandler=()=>{
         atx.logout();
-        history.replaceState('/login')
+        history.replace('/login')
     }
 
   return (
