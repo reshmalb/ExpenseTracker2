@@ -19,12 +19,12 @@ const ProfileForm = () => {
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
-   if(auth.currentUser.displayName){
-    setName(auth.currentUser.displayName)
-   }
-   if(auth.currentUser.photoURL){
-    setImageURL(auth.currentUser.photoURL)
-   }
+  //  if(auth.currentUser.displayName){
+  //   setName(auth.currentUser.displayName)
+  //  }
+  //  if(auth.currentUser.photoURL){
+  //   setImageURL(auth.currentUser.photoURL)
+  //  }
   // const handleImageChange = (e) => {
   //   setImage(e.target.files[0]);
   // };
