@@ -117,6 +117,9 @@ const onSwithAuthorizationModeHandler=()=>{
   
   setLoading(false)
   };
+  const passwordResetHandler=()=>{
+    history.replace('/passwordreset')
+  }
 
   return (
     <Container className="d-flex justify-content-center align-items-center mb-3rem border-shadow-2px" style={{ minHeight: '100vh' }}>
@@ -141,7 +144,7 @@ const onSwithAuthorizationModeHandler=()=>{
            
           </Button>}
           <div>
-           {!isLoading && isLogin && <a href='#forgot'>Forgot password? </a>
+           {!isLoading && isLogin && <Button type="link" onClick={passwordResetHandler}>Forgot password? </Button>
            
             }
              </div>
