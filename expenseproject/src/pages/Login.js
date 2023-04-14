@@ -4,7 +4,10 @@ import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios'
 import AuthContext from '../Store/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
-import Dashboard from '../Layout/DashBoard';
+
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import {auth} from '../firebase/firebase'
 
 const LoginPage = () => {
 const emailref=useRef();
@@ -28,54 +31,91 @@ const onSwithAuthorizationModeHandler=()=>{
     event.preventDefault();
      const email=emailref.current.value;
      const password=passwordRef.current.value;
-     let url;
-     if(isLogin){
-        url="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es"
-     }
-     else{
-      url= 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es';
-      const confirmPassword=confirmpasswordRef.current.value;
-      if(password!=confirmPassword){
-          setPasswordMisMatch(true)
-      }
+    //  let url;
+    //  if(isLogin){
+    //     url="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es"
+    //  }
+    //  else{
+    //   url= 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD0an-iOy1im1Cjd3_OhzCjGooPUxdc7Es';
+    //   const confirmPassword=confirmpasswordRef.current.value;
+    //   if(password!=confirmPassword){
+    //       setPasswordMisMatch(true)
+    //   }
 
          
-     }
-     try{
+    //  }
+    //  try{
 
-          const response=await axios.post(url,{
-            email:email,
-            password:password,
-            returnSecureToken:true
-          });
-          const data=response.data;     
-          if(response.status===200){
-           console.log("login success");
-           console.log("token=",data.idToken)
-           if(!isLogin){
-            setIsLogin(true)
-            history.replace('./login')
-           }
-           else{
-           atx.login(data.idToken)
-           history.replace('/dashboard')
+    //       const response=await axios.post(url,{
+    //         email:email,
+    //         password:password,
+    //         returnSecureToken:true
+    //       });
+    //       const data=response.data;     
+    //       if(response.status===200){
+    //        console.log("login success");
+    //        console.log("token=",data.idToken)
+    //        if(!isLogin){
+    //         setIsLogin(true)
+    //         history.replace('./login')
+    //        }
+    //        else{
+    //        atx.login(data.idToken)
+    //        history.replace('/dashboard')
                     
-           }
+    //        }
            
-          }
-          else{
-            throw new Error('Authntication failed!!!')
-          }
+    //       }
+    //       else{
+    //         throw new Error('Authntication failed!!!')
+    //       }
 
-     }
-     catch(error){
-      alert(error.message)
+    //  }
+    //  catch(error){
+    //   alert(error.message)
 
-     }
-     emailref.current.value="";
-     passwordRef.current.value="";
-     setLoading(false)
+    //  }
+    //  emailref.current.value="";
+    //  passwordRef.current.value="";
+    //  setLoading(false)
 
+//WITH FIREBASE AUTH
+    if(isLogin){
+           signInWithEmailAndPassword(auth,email,password)
+          .then(usercredential=>{
+            const user=usercredential.user;
+            console.log(user)
+            const details={
+              name:user.displayName,
+              email:user.email,
+              imageURL:user.photoURL
+
+            }
+            atx.login(user.accessToken,details)
+            history.replace('/profile')
+          }).catch(error=>{
+            console.log(error)
+          })
+        }
+    
+    if(!isLogin){
+      const confirmPassword=confirmpasswordRef.current.value;
+      if(password!=confirmPassword){
+             setPasswordMisMatch(true)
+           }
+
+      createUserWithEmailAndPassword(auth,email,password)
+      .then(usercredential=>{
+        const user=usercredential.user;
+        console.log(user)
+      
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    //WITH FIREBASE AUTH ENDS HERE
+  
+  setLoading(false)
   };
 
   return (
