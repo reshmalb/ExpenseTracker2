@@ -3,14 +3,17 @@ import { Navbar, Nav, Button } from 'react-bootstrap';
 import AuthContext from '../Store/AuthContext';
 import { NavLink } from 'react-router-dom';
 import Home from '../pages/Home';
+import { useHistory } from 'react-router-dom';
 
 
 const Header = () => {
+  const history=useHistory();
 
     const atx=useContext(AuthContext);
 
     const logoutHandler=()=>{
         atx.logout();
+        history.replaceState('/login')
     }
 
   return (
